@@ -1,0 +1,25 @@
+# Data
+data/raw/
+data/processed/
+*.csv
+*.zip
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Output
+*.log
