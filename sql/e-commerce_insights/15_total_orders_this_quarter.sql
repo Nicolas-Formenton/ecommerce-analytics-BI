@@ -1,0 +1,8 @@
+-- Card: Total orders this quarter
+-- Card ID: 39
+-- Display: scalar
+-- Dashboard: E-commerce Insights
+-- Description: Total number of orders in the current quarter.
+-- Database ID: 1
+--
+-- (No SQL found - check card structure)

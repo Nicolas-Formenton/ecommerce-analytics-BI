@@ -1,0 +1,103 @@
+    viewname     |                                           definition                                            
+-----------------+-------------------------------------------------------------------------------------------------
+ stg_order_items |  WITH source AS (                                                                              +
+                 |          SELECT olist_order_items.order_id,                                                    +
+                 |             olist_order_items.order_item_id,                                                   +
+                 |             olist_order_items.product_id,                                                      +
+                 |             olist_order_items.seller_id,                                                       +
+                 |             olist_order_items.shipping_limit_date,                                             +
+                 |             olist_order_items.price,                                                           +
+                 |             olist_order_items.freight_value                                                    +
+                 |            FROM olist_raw.olist_order_items                                                    +
+                 |         ), renamed AS (                                                                        +
+                 |          SELECT source.order_id,                                                               +
+                 |             source.order_item_id,                                                              +
+                 |             source.product_id,                                                                 +
+                 |             source.seller_id,                                                                  +
+                 |             source.shipping_limit_date,                                                        +
+                 |             source.price,                                                                      +
+                 |             source.freight_value,                                                              +
+                 |             CURRENT_TIMESTAMP AS _loaded_at                                                    +
+                 |            FROM source                                                                         +
+                 |         )                                                                                      +
+                 |  SELECT order_id,                                                                              +
+                 |     order_item_id,                                                                             +
+                 |     product_id,                                                                                +
+                 |     seller_id,                                                                                 +
+                 |     shipping_limit_date,                                                                       +
+                 |     price,                                                                                     +
+                 |     freight_value,                                                                             +
+                 |     _loaded_at                                                                                 +
+                 |    FROM renamed;
+ stg_customers   |  WITH source AS (                                                                              +
+                 |          SELECT olist_customers.customer_id,                                                   +
+                 |             olist_customers.customer_unique_id,                                                +
+                 |             olist_customers.customer_zip_code_prefix,                                          +
+                 |             olist_customers.customer_city,                                                     +
+                 |             olist_customers.customer_state                                                     +
+                 |            FROM olist_raw.olist_customers                                                      +
+                 |         ), renamed AS (                                                                        +
+                 |          SELECT source.customer_id,                                                            +
+                 |             source.customer_unique_id,                                                         +
+                 |             source.customer_zip_code_prefix,                                                   +
+                 |             TRIM(BOTH FROM source.customer_city) AS customer_city,                             +
+                 |             upper(TRIM(BOTH FROM source.customer_state)) AS customer_state,                    +
+                 |             CURRENT_TIMESTAMP AS _loaded_at                                                    +
+                 |            FROM source                                                                         +
+                 |         )                                                                                      +
+                 |  SELECT customer_id,                                                                           +
+                 |     customer_unique_id,                                                                        +
+                 |     customer_zip_code_prefix,                                                                  +
+                 |     customer_city,                                                                             +
+                 |     customer_state,                                                                            +
+                 |     _loaded_at                                                                                 +
+                 |    FROM renamed;
+ stg_orders      |  WITH source AS (                                                                              +
+                 |          SELECT olist_orders.order_id,                                                         +
+                 |             olist_orders.customer_id,                                                          +
+                 |             olist_orders.order_status,                                                         +
+                 |             olist_orders.order_purchase_timestamp,                                             +
+                 |             olist_orders.order_approved_at,                                                    +
+                 |             olist_orders.order_delivered_carrier_date,                                         +
+                 |             olist_orders.order_delivered_customer_date,                                        +
+                 |             olist_orders.order_estimated_delivery_date                                         +
+                 |            FROM olist_raw.olist_orders                                                         +
+                 |         ), renamed AS (                                                                        +
+                 |          SELECT source.order_id,                                                               +
+                 |             source.customer_id,                                                                +
+                 |             source.order_status,                                                               +
+                 |             source.order_purchase_timestamp,                                                   +
+                 |             source.order_approved_at,                                                          +
+                 |             source.order_delivered_carrier_date,                                               +
+                 |             source.order_delivered_customer_date,                                              +
+                 |             source.order_estimated_delivery_date,                                              +
+                 |             (source.order_purchase_timestamp)::date AS order_purchase_date,                    +
+                 |             (source.order_approved_at)::date AS order_approved_date,                           +
+                 |             (source.order_delivered_carrier_date)::date AS order_delivered_carrier_date_only,  +
+                 |             (source.order_delivered_customer_date)::date AS order_delivered_customer_date_only,+
+                 |             (source.order_estimated_delivery_date)::date AS order_estimated_delivery_date_only,+
+                 |                 CASE                                                                           +
+                 |                     WHEN ((source.order_status)::text = 'canceled'::text) THEN true            +
+                 |                     ELSE false                                                                 +
+                 |                 END AS is_canceled,                                                            +
+                 |             CURRENT_TIMESTAMP AS _loaded_at                                                    +
+                 |            FROM source                                                                         +
+                 |         )                                                                                      +
+                 |  SELECT order_id,                                                                              +
+                 |     customer_id,                                                                               +
+                 |     order_status,                                                                              +
+                 |     order_purchase_timestamp,                                                                  +
+                 |     order_approved_at,                                                                         +
+                 |     order_delivered_carrier_date,                                                              +
+                 |     order_delivered_customer_date,                                                             +
+                 |     order_estimated_delivery_date,                                                             +
+                 |     order_purchase_date,                                                                       +
+                 |     order_approved_date,                                                                       +
+                 |     order_delivered_carrier_date_only,                                                         +
+                 |     order_delivered_customer_date_only,                                                        +
+                 |     order_estimated_delivery_date_only,                                                        +
+                 |     is_canceled,                                                                               +
+                 |     _loaded_at                                                                                 +
+                 |    FROM renamed;
+(3 rows)
+

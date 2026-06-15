@@ -1,0 +1,8 @@
+-- Card: Customer satisfaction per category
+-- Card ID: 3
+-- Display: bar
+-- Dashboard: E-commerce Insights
+-- Description: Shows the distribution of the product categories along the scale of customer ratings
+-- Database ID: 1
+--
+-- (No SQL found - check card structure)

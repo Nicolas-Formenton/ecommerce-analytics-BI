@@ -1,0 +1,8 @@
+-- Card: User flow diagram
+-- Card ID: 11
+-- Display: sankey
+-- Dashboard: E-commerce Insights
+-- Description: Sankey flow from visiting our website to taking an action
+-- Database ID: 1
+--
+-- (No SQL found - check card structure)

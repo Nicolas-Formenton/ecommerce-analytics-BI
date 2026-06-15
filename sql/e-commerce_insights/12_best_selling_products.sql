@@ -1,0 +1,8 @@
+-- Card: Best selling products
+-- Card ID: 21
+-- Display: row
+-- Dashboard: E-commerce Insights
+-- Description: An ordered list of our most successful products
+-- Database ID: 1
+--
+-- (No SQL found - check card structure)

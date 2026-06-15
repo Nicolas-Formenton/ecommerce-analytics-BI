@@ -252,9 +252,65 @@ Based on the analysis, four actions deserve priority:
 
 ## Tech Stack
 
-**Python** · **NumPy** · **pandas** · **matplotlib** · **tabulate** · **Hex.tech**
+**Python** · **NumPy** · **pandas** · **matplotlib** · **tabulate** · **Hex.tech** · **PostgreSQL** · **dbt** · **Metabase**
 
 All statistical models implemented from scratch with NumPy. No scikit-learn, no Prophet, no black-box dependencies.
+
+The data pipeline layer uses **PostgreSQL 16** for storage, **dbt** for SQL transformations (staging views + mart tables), and **Metabase** for self-service BI dashboards (see "BI Dashboards" below).
+
+---
+
+## BI Dashboards
+
+The same Olist data was also used to build a self-service BI layer: 4 interactive Metabase dashboards backed by 70+ native SQL questions. Screenshots of each dashboard are in [`dashboards/`](./dashboards); the underlying SQL is in [`sql/`](./sql).
+
+| Dashboard | Cards | Focus | Screenshot |
+|-----------|-------|-------|------------|
+| **E-commerce Insights** | 36 | Revenue by state, products, categories, sources, checkout funnel | [01_e-commerce_insights.png](./dashboards/01_e-commerce_insights.png) |
+| **Executive Dashboard** | 9 | KPIs (revenue, orders, AOV), trends, top categories, payment mix | [02_executive_dashboard.png](./dashboards/02_executive_dashboard.png) |
+| **Customer Analytics** | 8 | RFM segmentation, CLV distribution, cohort retention, repeat rate | [03_customer_analytics_dashboard.png](./dashboards/03_customer_analytics_dashboard.png) |
+| **Operations** | 8 | Fulfillment funnel, delivery time, on-time rate, review scores | [04_operations_dashboard.png](./dashboards/04_operations_dashboard.png) |
+
+### Data pipeline (dbt)
+
+The BI layer reads from a SQL-first pipeline: raw CSVs → PostgreSQL `olist_raw` schema → dbt staging views → dbt mart tables → Metabase. The dbt staging view SQL and the mart table DDL are in [`dbt-models/`](./dbt-models). The raw schema DDL is in [`bi-pipeline/postgres/`](./bi-pipeline/postgres).
+
+```
+Kaggle Olist CSVs (9 files)
+        |
+        v
+PostgreSQL `olist` database
+   |-- olist_raw schema (9 source tables, ~100K rows)
+   |
+   |-- olist_marts schema (dbt models)
+       |-- staging views: stg_orders, stg_customers, stg_order_items
+       |-- mart tables: mart_customer_orders, mart_monthly_revenue
+        |
+        v
+Metabase 4 Dashboards / 70+ Questions
+```
+
+**Key row counts** (live snapshot from `pg_database`):
+
+| Table | Rows |
+|-------|------|
+| `olist_raw.olist_orders` | 99,441 |
+| `olist_raw.olist_customers` | 99,441 |
+| `olist_raw.olist_order_items` | 112,650 |
+| `olist_marts.mart_customer_orders` | 99,441 |
+| `olist_marts.mart_monthly_revenue` | 23 |
+
+### SQL examples
+
+The dashboards run pure native SQL (no GUI query builder). A few highlights:
+
+- **Customer RFM segmentation** ([`sql/customer_analytics_dashboard/01_customer_segments__rfm_.sql`](./sql/customer_analytics_dashboard/01_customer_segments__rfm_.sql)) — percentile-based Recency/Frequency/Monetary scoring that replicates the K-Means RFM in `analysis/olist_cx_analytics.py` using SQL only
+- **Order fulfillment funnel** ([`sql/operations_dashboard/02_ops_q1__order_fulfillment_funnel.sql`](./sql/operations_dashboard/02_ops_q1__order_fulfillment_funnel.sql)) — counts orders by lifecycle stage
+- **Total revenue** ([`sql/executive_dashboard/03_01_total_revenue.sql`](./sql/executive_dashboard/03_01_total_revenue.sql)) — KPI card reading from `olist_marts.mart_monthly_revenue`
+
+### Recovery note
+
+The BI layer was originally deployed via Docker Compose but the project directory was lost. The data and dashboard definitions survived in a Docker named volume (`docker_pgdata`). The full recovery writeup — including the Metabase v0.62.1.4 password reset and the `auth_identity.credentials` discovery — is in [`docs_RECOVERY.md`](./docs_RECOVERY.md).
 
 ---
 
@@ -294,6 +350,11 @@ ecommerce-analytics-BI/
 ├── hex_export/       ← Original Hex YAML project + AI prompt
 ├── reports/          ← Output reports (PDF, figures)
 ├── scripts/          ← Data download utilities
+├── dashboards/       ← BI dashboard screenshots (Metabase)
+├── sql/              ← All 70+ native SQL queries, grouped by dashboard
+├── dbt-models/       ← dbt staging view SQL + mart table DDL
+├── bi-pipeline/      ← BI pipeline infrastructure files (Postgres schema DDL)
+├── docs_RECOVERY.md  ← Metabase recovery writeup
 ├── requirements.txt  ← Python dependencies
 ├── DATA_LICENSE.md   ← CC BY-NC-SA 4.0 (for Olist dataset)
 └── LICENSE           ← MIT (for code)

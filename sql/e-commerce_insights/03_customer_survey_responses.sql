@@ -1,0 +1,8 @@
+-- Card: Customer survey responses
+-- Card ID: 5
+-- Display: table
+-- Dashboard: E-commerce Insights
+-- Description: Feedback on our products via weekly survey
+-- Database ID: 1
+--
+-- (No SQL found - check card structure)

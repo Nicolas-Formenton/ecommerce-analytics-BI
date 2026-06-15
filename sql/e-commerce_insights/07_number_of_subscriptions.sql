@@ -1,0 +1,8 @@
+-- Card: Number of subscriptions
+-- Card ID: 16
+-- Display: area
+-- Dashboard: E-commerce Insights
+-- Description: Customers that signed up for our monthly subscription
+-- Database ID: 1
+--
+-- (No SQL found - check card structure)

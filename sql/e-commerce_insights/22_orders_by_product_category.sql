@@ -1,0 +1,8 @@
+-- Card: Orders by product category
+-- Card ID: 24
+-- Display: line
+-- Dashboard: E-commerce Insights
+-- Description: Compares the orders of each category quarter over quarter
+-- Database ID: 1
+--
+-- (No SQL found - check card structure)

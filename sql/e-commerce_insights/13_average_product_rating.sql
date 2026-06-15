@@ -1,0 +1,8 @@
+-- Card: Average product rating
+-- Card ID: 22
+-- Display: gauge
+-- Dashboard: E-commerce Insights
+-- Description: Indicates the average customer review of our products
+-- Database ID: 1
+--
+-- (No SQL found - check card structure)

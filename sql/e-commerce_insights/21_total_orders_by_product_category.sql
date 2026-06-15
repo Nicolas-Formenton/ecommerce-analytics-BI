@@ -1,0 +1,8 @@
+-- Card: Total orders by product category
+-- Card ID: 20
+-- Display: pie
+-- Dashboard: E-commerce Insights
+-- Description: Breaks down the overall performance of each of the product categories
+-- Database ID: 1
+--
+-- (No SQL found - check card structure)

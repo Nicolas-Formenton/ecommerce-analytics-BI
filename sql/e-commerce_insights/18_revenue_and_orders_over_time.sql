@@ -1,0 +1,8 @@
+-- Card: Revenue and orders over time
+-- Card ID: 12
+-- Display: combo
+-- Dashboard: E-commerce Insights
+-- Description: Cumulative revenue overlaid with number of orders placed each month
+-- Database ID: 1
+--
+-- (No SQL found - check card structure)

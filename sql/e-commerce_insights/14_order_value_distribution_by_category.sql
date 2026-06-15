@@ -1,0 +1,8 @@
+-- Card: Order value distribution by category
+-- Card ID: 38
+-- Display: boxplot
+-- Dashboard: E-commerce Insights
+-- Description: Order total distribution by category (median, IQR, outliers) to see which categories tend to drive bigger revenue.
+-- Database ID: 1
+--
+-- (No SQL found - check card structure)

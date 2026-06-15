@@ -1,0 +1,8 @@
+-- Card: Subscription seats over time
+-- Card ID: 14
+-- Display: waterfall
+-- Dashboard: E-commerce Insights
+-- Description: Number of seats in an average subscription, showing increase and decrease
+-- Database ID: 1
+--
+-- (No SQL found - check card structure)

@@ -1,0 +1,8 @@
+-- Card: Product category orders per age
+-- Card ID: 18
+-- Display: bar
+-- Dashboard: E-commerce Insights
+-- Description: Shows a distribution of orders broken down by product category across our customers' individual age values
+-- Database ID: 1
+--
+-- (No SQL found - check card structure)

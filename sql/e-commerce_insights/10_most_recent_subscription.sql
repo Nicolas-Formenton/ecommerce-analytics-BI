@@ -1,0 +1,8 @@
+-- Card: Most recent subscription
+-- Card ID: 23
+-- Display: object
+-- Dashboard: E-commerce Insights
+-- Description: The most recent subscription in our database
+-- Database ID: 1
+--
+-- (No SQL found - check card structure)

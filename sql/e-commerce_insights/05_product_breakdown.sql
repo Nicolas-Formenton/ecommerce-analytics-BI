@@ -1,0 +1,8 @@
+-- Card: Product breakdown
+-- Card ID: 7
+-- Display: pie
+-- Dashboard: E-commerce Insights
+-- Description: Orders for each product, grouped by product category
+-- Database ID: 1
+--
+-- (No SQL found - check card structure)

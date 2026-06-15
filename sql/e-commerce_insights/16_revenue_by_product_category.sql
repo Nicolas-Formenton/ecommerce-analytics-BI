@@ -1,0 +1,8 @@
+-- Card: Revenue by product category
+-- Card ID: 13
+-- Display: bar
+-- Dashboard: E-commerce Insights
+-- Description: Monthly revenue broken down by products
+-- Database ID: 1
+--
+-- (No SQL found - check card structure)

@@ -1,0 +1,8 @@
+-- Card: Revenue per quarter
+-- Card ID: 15
+-- Display: smartscalar
+-- Dashboard: E-commerce Insights
+-- Description: Total revenue last quarter compared to the previous
+-- Database ID: 1
+--
+-- (No SQL found - check card structure)

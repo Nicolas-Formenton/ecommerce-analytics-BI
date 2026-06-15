@@ -1,0 +1,8 @@
+-- Card: Revenue by state
+-- Card ID: 2
+-- Display: map
+-- Dashboard: E-commerce Insights
+-- Description: Revenue in the US broken down by state
+-- Database ID: 1
+--
+-- (No SQL found - check card structure)

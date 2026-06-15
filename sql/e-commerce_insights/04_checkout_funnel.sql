@@ -1,0 +1,8 @@
+-- Card: Checkout funnel
+-- Card ID: 6
+-- Display: funnel
+-- Dashboard: E-commerce Insights
+-- Description: Flow from viewing our website (empty) to checkout and subscribe
+-- Database ID: 1
+--
+-- (No SQL found - check card structure)

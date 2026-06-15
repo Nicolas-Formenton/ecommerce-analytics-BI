@@ -1,0 +1,8 @@
+-- Card: Total order amount vs. discount given
+-- Card ID: 8
+-- Display: scatter
+-- Dashboard: E-commerce Insights
+-- Description: Analysis of discounts given vs. the size of the order
+-- Database ID: 1
+--
+-- (No SQL found - check card structure)

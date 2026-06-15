@@ -1,0 +1,8 @@
+-- Card: Orders according to sources per quarter
+-- Card ID: 10
+-- Display: pivot
+-- Dashboard: E-commerce Insights
+-- Description: Orders placed per quarter broken down by source and formatted to highlight best and worst quarters
+-- Database ID: 1
+--
+-- (No SQL found - check card structure)

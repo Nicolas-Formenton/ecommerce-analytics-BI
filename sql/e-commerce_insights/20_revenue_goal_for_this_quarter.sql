@@ -1,0 +1,8 @@
+-- Card: Revenue goal for this quarter
+-- Card ID: 17
+-- Display: progress
+-- Dashboard: E-commerce Insights
+-- Description: Compares total revenue this quarter to our goal
+-- Database ID: 1
+--
+-- (No SQL found - check card structure)
