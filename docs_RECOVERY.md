@@ -119,3 +119,13 @@ If you have to do this in the future and you know the user has been active befor
 - ❌ `password_salt = UUID` with `password = bcrypt(uuid + plain)` — works mathematically, but
   the CLI was writing to wrong column
 - ❌ Restarting Metabase to clear in-memory rate limiting — necessary but not sufficient
+
+## Subsequent layout fixes
+
+After the initial recovery, two follow-up issues were addressed:
+
+1. **Broken data connection in Metabase**: The Metabase database record was still pointing at `host: postgres` (the old docker-compose service name) instead of the recovery container. Fixed via `PUT /api/database/2` with `host: host.docker.internal`, then `POST /api/database/2/sync_schema` to refresh the metadata cache.
+
+2. **Dashboard layout cleanup**:
+   - **Executive Dashboard** had its cards packed into the left half of a 24-col grid (KPIs at 4 wide each, etc.), and had a leftover empty text card at the bottom. Redesigned to use the full 24-col grid: 3 KPIs at 8 wide each, full-width Revenue Trend, paired cards (Top Categories | Revenue by State, Payment Distribution | Order Status), and the empty text card removed.
+   - **Customer Analytics Dashboard** had Customer Segments and Revenue by Segment stacked vertically (12 wide each), and Avg Review Score was squeezed into a 6-wide column while CLV Distribution and Top 10 Cities were 12 wide. Redesigned so Customer Segments | Revenue by Segment are side-by-side (12 wide each), and Avg Review Score is now 12 wide like the other charts.

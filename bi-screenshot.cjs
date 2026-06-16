@@ -43,8 +43,8 @@ function postJson(url, body) {
   });
 }
 
-async function captureDashboard(page, dashId, name) {
-  console.log(`\n==> Dashboard ${dashId}: ${name}`);
+async function captureDashboardTab(page, dashId, name, tabParam) {
+  console.log(`\n==> Capturing dashboard ${dashId} (${name})`);
 
   const consoleErrors = [];
   page.removeAllListeners("pageerror");
@@ -59,48 +59,25 @@ async function captureDashboard(page, dashId, name) {
     }
   });
 
-  // 1. Navigate (initial load uses default viewport)
-  await page.goto(`${METABASE_URL}/dashboard/${dashId}`, {
-    waitUntil: "domcontentloaded",
-    timeout: 60000,
-  });
+  // Reset viewport to default so the measurement isn't biased by previous captures
+  await page.setViewportSize({ width: 2560, height: 1440 });
+
+  // Navigate to dashboard with optional tab
+  const url = tabParam
+    ? `${METABASE_URL}/dashboard/${dashId}?tab=${tabParam}`
+    : `${METABASE_URL}/dashboard/${dashId}`;
+  await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60000 });
   await page.waitForLoadState("networkidle", { timeout: 60000 });
   await page.waitForTimeout(3000);
 
-  // 2. Click "Toggle sidebar" to hide the parameter sidebar
+  // Click "Toggle sidebar" to hide the parameter filter panel
   const toggleBtn = page.locator('button[aria-label="Toggle sidebar"]').first();
   if (await toggleBtn.count() > 0) {
-    console.log("  Hiding parameter sidebar");
     await toggleBtn.click();
     await page.waitForTimeout(2000);
   }
 
-  // 3. Measure content height to choose a viewport height
-  const contentHeight = await page.evaluate(() => {
-    const main = document.querySelector("main");
-    if (!main) return 2000;
-    // Find all card containers and use the maximum bottom
-    const cards = document.querySelectorAll('[data-testid^="dashcard"], .DashCard, [class*="DashCard"]');
-    let maxBottom = 0;
-    cards.forEach((el) => {
-      const r = el.getBoundingClientRect();
-      maxBottom = Math.max(maxBottom, r.bottom);
-    });
-    // Also check the dashboard element
-    const dash = document.querySelector('[data-testid="dashboard"], [data-element-id="dashboard"]');
-    if (dash) {
-      maxBottom = Math.max(maxBottom, dash.getBoundingClientRect().bottom);
-    }
-    // Add header height (~52px) and some padding
-    return Math.ceil(maxBottom) + 100;
-  });
-  console.log(`  Content height: ${contentHeight}px`);
-
-  // 4. Resize viewport to fit the entire dashboard
-  await page.setViewportSize({ width: 2560, height: contentHeight });
-  await page.waitForTimeout(3000);
-
-  // 5. Wait until all problem charts clear (max 60s)
+  // Wait until all problem charts clear (max 60s)
   const startWait = Date.now();
   while (Date.now() - startWait < 60000) {
     const problemCount = await page
@@ -111,7 +88,27 @@ async function captureDashboard(page, dashId, name) {
     await page.waitForTimeout(2000);
   }
 
-  // 6. Scroll through to trigger any lazy-loaded charts
+  // Measure content height
+  const contentHeight = await page.evaluate(() => {
+    const cards = document.querySelectorAll('[data-testid^="dashcard"], .DashCard, [class*="DashCard"]');
+    let maxBottom = 0;
+    cards.forEach((el) => {
+      const r = el.getBoundingClientRect();
+      maxBottom = Math.max(maxBottom, r.bottom);
+    });
+    const dash = document.querySelector('[data-testid="dashboard"], [data-element-id="dashboard"]');
+    if (dash) {
+      maxBottom = Math.max(maxBottom, dash.getBoundingClientRect().bottom);
+    }
+    return Math.ceil(maxBottom) + 100;
+  });
+  console.log(`  Content height: ${contentHeight}px`);
+
+  // Resize viewport to fit
+  await page.setViewportSize({ width: 2560, height: contentHeight });
+  await page.waitForTimeout(3000);
+
+  // Scroll to trigger lazy loading
   const finalHeight = await page.evaluate(() => document.body.scrollHeight);
   for (let y = 0; y < finalHeight; y += 800) {
     await page.evaluate((scrollY) => window.scrollTo(0, scrollY), y);
@@ -120,14 +117,14 @@ async function captureDashboard(page, dashId, name) {
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.waitForTimeout(1500);
 
-  // 7. Final check
+  // Final state
   const dashCards = await page.locator('[data-testid^="dashcard"]').count();
   const problemCount = await page
     .locator("text=/There was a problem displaying this chart/i")
     .count();
   console.log(`  DashCards: ${dashCards}, Problem charts: ${problemCount}`);
 
-  // 8. Take the full-page screenshot
+  // Screenshot
   const filePath = path.join(OUTPUT_DIR, `${name}.png`);
   await page.screenshot({ path: filePath, fullPage: true });
   const stat = fs.statSync(filePath);
@@ -171,16 +168,15 @@ async function main() {
 
   const page = await context.newPage();
 
-  const dashboards = [
-    { id: 1, name: "01_e-commerce_insights" },
-    { id: 2, name: "02_executive_dashboard" },
-    { id: 3, name: "03_customer_analytics_dashboard" },
-    { id: 4, name: "04_operations_dashboard" },
-  ];
+  // E-commerce Insights has 3 tabs
+  await captureDashboardTab(page, 1, "01a_e-commerce_overview", "1-overview");
+  await captureDashboardTab(page, 1, "01b_e-commerce_portfolio", "2-portfolio-performance");
+  await captureDashboardTab(page, 1, "01c_e-commerce_website", "3-website-analysis");
 
-  for (const dash of dashboards) {
-    await captureDashboard(page, dash.id, dash.name);
-  }
+  // Other dashboards
+  await captureDashboardTab(page, 2, "02_executive_dashboard", null);
+  await captureDashboardTab(page, 3, "03_customer_analytics_dashboard", null);
+  await captureDashboardTab(page, 4, "04_operations_dashboard", null);
 
   await browser.close();
   console.log("\n==> Done");

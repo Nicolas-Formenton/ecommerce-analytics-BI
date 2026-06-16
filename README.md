@@ -266,8 +266,8 @@ The same Olist data was also used to build a self-service BI layer: 4 interactiv
 
 | Dashboard | Cards | Focus | Screenshot |
 |-----------|-------|-------|------------|
-| **E-commerce Insights** | 36 | Revenue by state, products, categories, sources, checkout funnel | [01_e-commerce_insights.png](./dashboards/01_e-commerce_insights.png) |
-| **Executive Dashboard** | 9 | KPIs (revenue, orders, AOV), trends, top categories, payment mix | [02_executive_dashboard.png](./dashboards/02_executive_dashboard.png) |
+| **E-commerce Insights** (3 tabs) | 36 | Revenue by state, products, categories, sources, checkout funnel | [Overview](./dashboards/01a_e-commerce_overview.png) · [Portfolio](./dashboards/01b_e-commerce_portfolio.png) · [Website](./dashboards/01c_e-commerce_website.png) |
+| **Executive Dashboard** | 8 | KPIs (revenue, orders, AOV), trends, top categories, payment mix | [02_executive_dashboard.png](./dashboards/02_executive_dashboard.png) |
 | **Customer Analytics** | 8 | RFM segmentation, CLV distribution, cohort retention, repeat rate | [03_customer_analytics_dashboard.png](./dashboards/03_customer_analytics_dashboard.png) |
 | **Operations** | 8 | Fulfillment funnel, delivery time, on-time rate, review scores | [04_operations_dashboard.png](./dashboards/04_operations_dashboard.png) |
 
@@ -350,10 +350,12 @@ ecommerce-analytics-BI/
 ├── hex_export/       ← Original Hex YAML project + AI prompt
 ├── reports/          ← Output reports (PDF, figures)
 ├── scripts/          ← Data download utilities
-├── dashboards/       ← BI dashboard screenshots (Metabase)
+├── dashboards/       ← BI dashboard screenshots (Metabase) — 6 files for 4 dashboards
+│                        (E-commerce Insights has 3 tabs: a=Overview, b=Portfolio, c=Website)
 ├── sql/              ← All 70+ native SQL queries, grouped by dashboard
 ├── dbt-models/       ← dbt staging view SQL + mart table DDL
 ├── bi-pipeline/      ← BI pipeline infrastructure files (Postgres schema DDL)
+├── bi-screenshot.cjs ← Playwright script for re-capturing the dashboard screenshots
 ├── docs_RECOVERY.md  ← Metabase recovery writeup
 ├── requirements.txt  ← Python dependencies
 ├── DATA_LICENSE.md   ← CC BY-NC-SA 4.0 (for Olist dataset)
